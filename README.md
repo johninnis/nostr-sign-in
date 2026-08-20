@@ -1,5 +1,7 @@
 # innis/nostr-sign-in
 
+[![CI](https://github.com/johninnis/nostr-sign-in/actions/workflows/ci.yml/badge.svg)](https://github.com/johninnis/nostr-sign-in/actions/workflows/ci.yml)
+
 NIP-98 cookie-session sign-in for Symfony applications, riding Symfony Security. The browser
 signs exactly one [NIP-98](https://github.com/nostr-protocol/nips/blob/master/98.md) proof; a
 custom authenticator verifies it and the firewall carries the identity in the session. Roles,
@@ -250,3 +252,7 @@ composer test          # phpunit, then phpstan at level 9
 composer check-style
 composer check-rector
 ```
+
+## License
+
+MIT License. See LICENSE file for details.
