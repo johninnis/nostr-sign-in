@@ -1,0 +1,69 @@
+{
+    "name": "innis/nostr-sign-in",
+    "description": "NIP-98 sign-in for Symfony applications riding Symfony Security: one signed proof opens the firewall session, roles and voters do the rest",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["nostr", "nip-98", "symfony", "security", "authentication", "sign-in"],
+    "authors": [
+        {
+            "name": "John Innis",
+            "email": "john@innis.xyz",
+            "homepage": "https://www.innis.xyz/"
+        }
+    ],
+    "require": {
+        "php": "^8.4",
+        "innis/nostr-core": "^0.7",
+        "psr/cache": "^3",
+        "symfony/event-dispatcher": "^7.4",
+        "symfony/http-foundation": "^7.4",
+        "symfony/http-kernel": "^7.4",
+        "symfony/routing": "^7.4",
+        "symfony/security-core": "^7.4",
+        "symfony/security-http": "^7.4"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.95",
+        "innis/coding-standards": "^0.1",
+        "phpstan/phpstan": "~2.2.6",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "phpunit/phpunit": "^13.1",
+        "rector/rector": "~2.5.9",
+        "symfony/browser-kit": "^7.4",
+        "symfony/cache": "^7.4",
+        "symfony/framework-bundle": "^7.4",
+        "symfony/rate-limiter": "^7.4",
+        "symfony/security-bundle": "^7.4"
+    },
+    "suggest": {
+        "symfony/rate-limiter": "Enables login_throttling on the sign-in firewall, which the authenticator is shaped for",
+        "symfony/security-bundle": "Runs the firewall this package plugs into; only pure-component use goes without it"
+    },
+    "autoload": {
+        "psr-4": {
+            "Innis\\Nostr\\SignIn\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Innis\\Nostr\\SignIn\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": [
+            "phpunit",
+            "@analyse"
+        ],
+        "test-unit": "phpunit --testsuite=Unit",
+        "test-integration": "phpunit --testsuite=Integration",
+        "test-coverage": "XDEBUG_MODE=coverage phpunit --coverage-html var/tests/coverage/html --coverage-text --coverage-clover var/tests/coverage/clover.xml",
+        "analyse": "phpstan analyse",
+        "fix-style": "php-cs-fixer fix",
+        "check-style": "php-cs-fixer fix --dry-run --diff",
+        "rector": "rector process",
+        "check-rector": "rector process --dry-run"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

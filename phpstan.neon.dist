@@ -1,0 +1,18 @@
+includes:
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/innis/coding-standards/extension.neon
+
+parameters:
+    level: 9
+    paths:
+        - src
+        - tests
+        - examples
+    tmpDir: var/phpstan
+    ignoreErrors:
+        # __unserialize is PHP's own magic-method name — the engine spells it, not us, and
+        # renaming it to the UK form would silently stop unserialisation ever calling it.
+        -
+            message: '#Identifier __unserialize uses a US spelling#'
+            path: src/Infrastructure/Security/NostrUser.php
+            count: 1
