@@ -101,7 +101,7 @@ final readonly class Nip98Authenticator implements AuthenticatorInterface
             ?? new JsonResponse(
                 ['success' => false, 'message' => $exception->getMessageKey(), 'pubkey' => null],
                 Response::HTTP_UNAUTHORIZED,
-                ['WWW-Authenticate' => 'Nostr'],
+                ['WWW-Authenticate' => NostrAuthHeaderCodec::SCHEME],
             );
     }
 

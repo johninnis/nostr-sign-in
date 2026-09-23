@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Innis\Nostr\SignIn\Infrastructure\Security;
 
+use Innis\Nostr\Core\Domain\Service\NostrAuthHeaderCodec;
 use Override;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -40,7 +41,7 @@ final readonly class RefusalResponder implements AuthenticationEntryPointInterfa
             return new RedirectResponse($request->getBasePath().'/');
         }
 
-        $challenge = Response::HTTP_UNAUTHORIZED === $status ? ['WWW-Authenticate' => 'Nostr'] : [];
+        $challenge = Response::HTTP_UNAUTHORIZED === $status ? ['WWW-Authenticate' => NostrAuthHeaderCodec::SCHEME] : [];
 
         return new JsonResponse(['success' => false, 'message' => $message], $status, $challenge);
     }
