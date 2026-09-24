@@ -1,4 +1,4 @@
-# 9. One NIP-98 proof starts a cookie session, and the firewall carries it
+# 1. One NIP-98 proof starts a cookie session, and the firewall carries it
 
 ## Status
 
