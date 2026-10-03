@@ -43,12 +43,14 @@ final class SignedAuthHeader
 
     public static function forRequest(KeyPair $keyPair, Nip98Request $request, ?Timestamp $createdAt = null): string
     {
-        return NostrAuthHeaderCodec::encode(self::event($keyPair, $request, $createdAt));
+        return NostrAuthHeaderCodec::encode(self::event($keyPair, $request, $createdAt))
+            ?? throw new InvalidArgumentException(sprintf('An Authorization header for %s is longer than the %d characters a server reads', (string) $request->getUrl(), NostrAuthHeaderCodec::MAX_HEADER_LENGTH));
     }
 
     public static function event(KeyPair $keyPair, Nip98Request $request, ?Timestamp $createdAt = null): Event
     {
-        return RumourFactory::createHttpAuth($keyPair->getPublicKey(), $request, $createdAt)
-            ->sign($keyPair, self::signer());
+        $rumour = new RumourFactory($keyPair->getPublicKey())->createHttpAuth($request);
+
+        return (null === $createdAt ? $rumour : $rumour->withCreatedAt($createdAt))->sign($keyPair, self::signer());
     }
 }

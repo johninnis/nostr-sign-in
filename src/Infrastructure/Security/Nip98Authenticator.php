@@ -10,6 +10,7 @@ use Innis\Nostr\Core\Domain\Failure\AuthHeaderDecodeFailure;
 use Innis\Nostr\Core\Domain\Failure\Nip98ValidationFailure;
 use Innis\Nostr\Core\Domain\Service\NostrAuthHeaderCodec;
 use Innis\Nostr\Core\Domain\ValueObject\Identity\PublicKey;
+use Innis\Nostr\Core\Domain\ValueObject\Protocol\HttpUrl;
 use Innis\Nostr\Core\Domain\ValueObject\Protocol\Nip98Request;
 use LogicException;
 use Override;
@@ -107,8 +108,11 @@ final readonly class Nip98Authenticator implements AuthenticatorInterface
 
     private function verifiedProof(Event $event, Request $request): bool
     {
+        $url = HttpUrl::tryFromString($request->getSchemeAndHttpHost().$request->getRequestUri())
+            ?? throw new CustomUserMessageAuthenticationException('That request was not made to an absolute http or https URL.');
+
         $verified = $this->nip98Validator->validate($event, Nip98Request::fromBody(
-            $request->getUri(),
+            $url,
             $request->getMethod(),
             $request->getContent(),
         ));

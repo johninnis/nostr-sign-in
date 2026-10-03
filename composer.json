@@ -13,7 +13,7 @@
     ],
     "require": {
         "php": "^8.4",
-        "innis/nostr-core": "^0.8",
+        "innis/nostr-core": "^0.9",
         "psr/cache": "^3",
         "symfony/event-dispatcher": "^7.4",
         "symfony/http-foundation": "^7.4",
@@ -28,7 +28,7 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.95",
-        "innis/coding-standards": "^0.1",
+        "innis/coding-standards": "^0.2",
         "phpstan/phpstan": "~2.2.6",
         "phpstan/phpstan-phpunit": "^2.0",
         "phpunit/phpunit": "^13.1",

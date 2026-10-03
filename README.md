@@ -57,6 +57,8 @@ services:
     Innis\Nostr\Core\Infrastructure\Time\SystemClock: ~
     Innis\Nostr\Core\Application\Port\ClockInterface: '@Innis\Nostr\Core\Infrastructure\Time\SystemClock'
     Innis\Nostr\Core\Application\Port\Nip98ReplayGuardInterface: '@Innis\Nostr\SignIn\Infrastructure\Cache\CachePoolNip98ReplayGuard'
+    Innis\Nostr\Core\Domain\Service\Nip98EventChecker: ~
+    Innis\Nostr\Core\Domain\Service\Nip98EventCheckerInterface: '@Innis\Nostr\Core\Domain\Service\Nip98EventChecker'
     Innis\Nostr\Core\Application\Service\Nip98Validator: ~
     Innis\Nostr\Core\Application\Service\Nip98ValidatorInterface: '@Innis\Nostr\Core\Application\Service\Nip98Validator'
 ```

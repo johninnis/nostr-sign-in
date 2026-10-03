@@ -78,6 +78,18 @@ final class Nip98AuthenticatorTest extends TestCase
         }
     }
 
+    public function testAProofForARequestWithNoHostIsRefused(): void
+    {
+        $request = new Request(server: ['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/action/sign-in']);
+        $request->attributes->set('_route', Nip98Authenticator::SIGN_IN_ROUTE);
+        $request->headers->set('Authorization', self::decodableProof());
+        $passport = $this->authenticator(self::verifiedKey())->authenticate($request);
+
+        $this->expectException(AuthenticationException::class);
+
+        $passport->getBadge(CustomCredentials::class)?->executeCustomChecker(self::user());
+    }
+
     public function testAVerifiedProofPassesItsCredentialCheck(): void
     {
         $this->expectNotToPerformAssertions();

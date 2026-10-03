@@ -8,6 +8,8 @@ use Innis\Nostr\Core\Application\Port\ClockInterface;
 use Innis\Nostr\Core\Application\Port\Nip98ReplayGuardInterface;
 use Innis\Nostr\Core\Application\Service\Nip98Validator;
 use Innis\Nostr\Core\Application\Service\Nip98ValidatorInterface;
+use Innis\Nostr\Core\Domain\Service\Nip98EventChecker;
+use Innis\Nostr\Core\Domain\Service\Nip98EventCheckerInterface;
 use Innis\Nostr\Core\Domain\Service\SignatureServiceInterface;
 use Innis\Nostr\Core\Infrastructure\Crypto\Secp256k1Signer;
 use Innis\Nostr\Core\Infrastructure\Time\SystemClock;
@@ -103,6 +105,7 @@ final class TestKernel extends Kernel
                 SignOutResponder::class,
                 ProbeController::class,
                 SystemClock::class,
+                Nip98EventChecker::class,
                 Nip98Validator::class,
             ] as $class) {
                 $container->register($class, $class)->setAutowired(true)->setAutoconfigured(true);
@@ -130,6 +133,7 @@ final class TestKernel extends Kernel
                 ->setFactory([Secp256k1Signer::class, 'create']);
 
             $container->setAlias(ClockInterface::class, SystemClock::class);
+            $container->setAlias(Nip98EventCheckerInterface::class, Nip98EventChecker::class);
             $container->setAlias(Nip98ValidatorInterface::class, Nip98Validator::class);
             $container->setAlias(Nip98ReplayGuardInterface::class, CachePoolNip98ReplayGuard::class);
             $container->setAlias(RoleAssignerInterface::class, TogglingRoleAssigner::class);
