@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Innis\Nostr\SignIn\Infrastructure\Security;
 
-use Deprecated;
 use Innis\Nostr\Core\Domain\ValueObject\Identity\PublicKey;
 use InvalidArgumentException;
 use Override;
@@ -36,12 +35,6 @@ final readonly class NostrUser implements UserInterface
     public function getUserIdentifier(): string
     {
         return $this->pubkey->toHex();
-    }
-
-    #[Deprecated('there are no credentials to erase; the interface removes the method in Symfony 8')]
-    #[Override]
-    public function eraseCredentials(): void
-    {
     }
 
     /**

@@ -34,7 +34,6 @@ use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Component\HttpKernel\Kernel;
 
 final class TestKernel extends Kernel
@@ -46,9 +45,6 @@ final class TestKernel extends Kernel
         parent::__construct('test', true);
     }
 
-    /**
-     * @return iterable<BundleInterface>
-     */
     #[Override]
     public function registerBundles(): iterable
     {

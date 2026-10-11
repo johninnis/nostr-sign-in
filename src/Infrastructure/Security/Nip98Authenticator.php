@@ -111,9 +111,12 @@ final readonly class Nip98Authenticator implements AuthenticatorInterface
         $url = HttpUrl::tryFromString($request->getSchemeAndHttpHost().$request->getRequestUri())
             ?? throw new CustomUserMessageAuthenticationException('That request was not made to an absolute http or https URL.');
 
+        // Deliberate: the method as sent on the wire, never the upper-cased form getMethod() answers — see nostr-adrs ADR-0070
+        $method = $request->server->getString('REQUEST_METHOD', 'GET');
+
         $verified = $this->nip98Validator->validate($event, Nip98Request::fromBody(
             $url,
-            $request->getMethod(),
+            $method,
             $request->getContent(),
         ));
 

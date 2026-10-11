@@ -14,9 +14,11 @@ Read `docs/adr/` before judging or changing the design; the decisions and their 
 composer require innis/nostr-sign-in symfony/security-bundle
 ```
 
+Requires PHP 8.4 and Symfony 8.
+
 ## What the package provides
 
-- **`Nip98Authenticator`** — answers the sign-in route (matched by route name, so your prefix needs no restating). Its passport carries the *claimed* key and defers verification through `innis/nostr-core`'s `Nip98ValidatorInterface` to the passport's credentials — the ordering that lets `login_throttling` count failed proofs. Success answers `{success, pubkey, npub}`; failure answers 401 (`WWW-Authenticate: Nostr`) with the refusal's own words — the validator's for a failed proof, the codec's for a header that did not decode.
+- **`Nip98Authenticator`** — answers the sign-in route (matched by route name, so your prefix needs no restating). Its passport carries the *claimed* key and defers verification through `innis/nostr-core`'s `Nip98ValidatorInterface` to the passport's credentials — the ordering that lets `login_throttling` count failed proofs. The proof is checked against the request as sent: its URL with the query as written, and its method byte for byte as it arrived on the wire, case included, never the upper-cased form Symfony's `getMethod()` answers (see the shared nostr-adrs ADR-0070). Success answers `{success, pubkey, npub}`; failure answers 401 (`WWW-Authenticate: Nostr`) with the refusal's own words — the validator's for a failed proof, the codec's for a header that did not decode.
 - **`NostrUser` / `NostrUserProvider`** — a user is a pubkey plus roles, re-read on every request. A role change deauthenticates the session on its next request — the token's roles are frozen at login, so a stale session can never keep old powers; the visitor signs in again under the new roles.
 - **`RoleAssignerInterface`** — where roles come from. The shipped `ConfiguredKeyRoleAssigner` maps a comma-separated list of npubs (or hex keys) to `ROLE_ADMIN` and grants everyone `ROLE_USER`; empty configuration grants nobody admin, and a value that is not a key is refused when the container builds. Implement the port yourself for richer schemes — and express authority *over something* (a group's admin, a magazine's editor) as a Symfony voter in your application, not as a role here.
 - **`RefusalResponder`** — the firewall's entry point (401, "Sign in to do that.") and access-denied handler (403, "That is not yours to do."): JSON to a caller that wants JSON, a redirect home for a browser, so a guarded area does not announce itself.
