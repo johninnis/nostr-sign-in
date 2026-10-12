@@ -169,6 +169,7 @@ Signs a real proof with a generated key, authenticates it, shows the roles the f
 composer test          # phpunit, then phpstan at level 9
 composer check-style
 composer check-rector
+composer check-path-lengths
 ```
 
 ## License
