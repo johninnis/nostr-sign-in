@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Innis\Nostr\Core\Application\Service\Nip98Validator;
 use Innis\Nostr\Core\Domain\Service\Nip98EventChecker;
+use Innis\Nostr\Core\Domain\ValueObject\Protocol\HttpMethod;
 use Innis\Nostr\Core\Domain\ValueObject\Protocol\HttpUrl;
 use Innis\Nostr\Core\Domain\ValueObject\Protocol\Nip98Request;
 use Innis\Nostr\Core\Infrastructure\Time\SystemClock;
@@ -36,7 +37,7 @@ $provider = new NostrUserProvider(new ConfiguredKeyRoleAssigner($keyPair->getPub
 
 $request = Request::create($signInUrl, 'POST');
 $request->attributes->set('_route', Nip98Authenticator::SIGN_IN_ROUTE);
-$request->headers->set('Authorization', SignedAuthHeader::forRequest($keyPair, Nip98Request::fromBodyHash(HttpUrl::fromString($signInUrl), 'POST')));
+$request->headers->set('Authorization', SignedAuthHeader::forRequest($keyPair, Nip98Request::fromBodyHash(HttpUrl::fromString($signInUrl), HttpMethod::fromString('POST'))));
 
 $checkCredentialsAsTheFirewallWould = static function (Passport $passport, UserInterface $user): void {
     $credentials = $passport->getBadge(CustomCredentials::class) ?? throw new RuntimeException('no credentials badge');

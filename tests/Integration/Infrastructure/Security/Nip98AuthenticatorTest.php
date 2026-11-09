@@ -8,6 +8,7 @@ use Innis\Nostr\Core\Application\Service\Nip98Validator;
 use Innis\Nostr\Core\Domain\Failure\Nip98ValidationFailure;
 use Innis\Nostr\Core\Domain\Service\Nip98EventChecker;
 use Innis\Nostr\Core\Domain\ValueObject\Identity\KeyPair;
+use Innis\Nostr\Core\Domain\ValueObject\Protocol\HttpMethod;
 use Innis\Nostr\Core\Domain\ValueObject\Protocol\HttpUrl;
 use Innis\Nostr\Core\Domain\ValueObject\Protocol\Nip98Request;
 use Innis\Nostr\Core\Infrastructure\Time\SystemClock;
@@ -44,6 +45,18 @@ final class Nip98AuthenticatorTest extends TestCase
         $credentials->executeCustomChecker(self::user($keyPair));
     }
 
+    public function testARequestNamingNoMethodIsRefusedRatherThanTreatedAsAGet(): void
+    {
+        $keyPair = SignedAuthHeader::keyPair();
+        $request = self::requestSentAs('GET', self::proofSignedFor($keyPair, 'GET'));
+        $request->server->remove('REQUEST_METHOD');
+        $credentials = self::credentials($request);
+
+        $this->expectExceptionMessage('That request names no HTTP method.');
+
+        $credentials->executeCustomChecker(self::user($keyPair));
+    }
+
     private static function credentials(Request $request): CustomCredentials
     {
         return self::authenticator()->authenticate($request)->getBadge(CustomCredentials::class)
@@ -70,7 +83,7 @@ final class Nip98AuthenticatorTest extends TestCase
 
     private static function proofSignedFor(KeyPair $keyPair, string $method): string
     {
-        return SignedAuthHeader::forRequest($keyPair, Nip98Request::fromBodyHash(HttpUrl::fromString(self::SIGN_IN_URL), $method));
+        return SignedAuthHeader::forRequest($keyPair, Nip98Request::fromBodyHash(HttpUrl::fromString(self::SIGN_IN_URL), HttpMethod::fromString($method)));
     }
 
     private static function user(KeyPair $keyPair): NostrUser

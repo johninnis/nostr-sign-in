@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Innis\Nostr\SignIn\Tests\Integration;
 
 use Innis\Nostr\Core\Domain\ValueObject\Identity\KeyPair;
+use Innis\Nostr\Core\Domain\ValueObject\Protocol\HttpMethod;
 use Innis\Nostr\Core\Domain\ValueObject\Protocol\HttpUrl;
 use Innis\Nostr\Core\Domain\ValueObject\Protocol\Nip98Request;
 use Innis\Nostr\SignIn\Testing\SignedAuthHeader;
@@ -59,7 +60,7 @@ final class SignInFlowTest extends WebTestCase
     public function testAProofSignedForAnotherUrlIsRefused(): void
     {
         $client = self::client();
-        $header = SignedAuthHeader::forRequest(SignedAuthHeader::keyPair(), Nip98Request::fromBodyHash(HttpUrl::fromString('http://localhost/action/probe/identity'), 'POST'));
+        $header = SignedAuthHeader::forRequest(SignedAuthHeader::keyPair(), Nip98Request::fromBodyHash(HttpUrl::fromString('http://localhost/action/probe/identity'), HttpMethod::fromString('POST')));
 
         $client->request('POST', '/action/sign-in', server: ['HTTP_AUTHORIZATION' => $header]);
 
@@ -70,7 +71,7 @@ final class SignInFlowTest extends WebTestCase
     {
         $client = self::client();
         $url = self::SIGN_IN_URL.'?b=2&a=1';
-        $header = SignedAuthHeader::forRequest(SignedAuthHeader::keyPair(), Nip98Request::fromBodyHash(HttpUrl::fromString($url), 'POST'));
+        $header = SignedAuthHeader::forRequest(SignedAuthHeader::keyPair(), Nip98Request::fromBodyHash(HttpUrl::fromString($url), HttpMethod::fromString('POST')));
 
         $client->request('POST', $url, server: ['HTTP_AUTHORIZATION' => $header]);
 
@@ -122,7 +123,7 @@ final class SignInFlowTest extends WebTestCase
         $client = self::client();
         $client->disableReboot();
         $keyPair = SignedAuthHeader::keyPair();
-        $wrongUrl = Nip98Request::fromBodyHash(HttpUrl::fromString('http://localhost/action/probe/identity'), 'POST');
+        $wrongUrl = Nip98Request::fromBodyHash(HttpUrl::fromString('http://localhost/action/probe/identity'), HttpMethod::fromString('POST'));
 
         $client->request('POST', '/action/sign-in', server: [
             'HTTP_AUTHORIZATION' => SignedAuthHeader::forRequest($keyPair, $wrongUrl),
@@ -279,7 +280,7 @@ final class SignInFlowTest extends WebTestCase
 
     private static function signInProof(KeyPair $keyPair): string
     {
-        return SignedAuthHeader::forRequest($keyPair, Nip98Request::fromBodyHash(HttpUrl::fromString(self::SIGN_IN_URL), 'POST'));
+        return SignedAuthHeader::forRequest($keyPair, Nip98Request::fromBodyHash(HttpUrl::fromString(self::SIGN_IN_URL), HttpMethod::fromString('POST')));
     }
 
     private static function sessionId(KernelBrowser $client): string

@@ -10,6 +10,7 @@ use Innis\Nostr\Core\Domain\Failure\AuthHeaderDecodeFailure;
 use Innis\Nostr\Core\Domain\Failure\Nip98ValidationFailure;
 use Innis\Nostr\Core\Domain\Service\NostrAuthHeaderCodec;
 use Innis\Nostr\Core\Domain\ValueObject\Identity\PublicKey;
+use Innis\Nostr\Core\Domain\ValueObject\Protocol\HttpMethod;
 use Innis\Nostr\Core\Domain\ValueObject\Protocol\HttpUrl;
 use Innis\Nostr\Core\Domain\ValueObject\Protocol\Nip98Request;
 use LogicException;
@@ -111,8 +112,9 @@ final readonly class Nip98Authenticator implements AuthenticatorInterface
         $url = HttpUrl::tryFromString($request->getSchemeAndHttpHost().$request->getRequestUri())
             ?? throw new CustomUserMessageAuthenticationException('That request was not made to an absolute http or https URL.');
 
-        // Deliberate: the method as sent on the wire, never the upper-cased form getMethod() answers — see nostr-adrs ADR-0070
-        $method = $request->server->getString('REQUEST_METHOD', 'GET');
+        // Deliberate: the method as sent on the wire, never the upper-cased form getMethod() answers, and no default for one the request does not name — see nostr-adrs ADR-0070 and ADR-0130
+        $method = HttpMethod::tryFromString($request->server->getString('REQUEST_METHOD'))
+            ?? throw new CustomUserMessageAuthenticationException('That request names no HTTP method.');
 
         $verified = $this->nip98Validator->validate($event, Nip98Request::fromBody(
             $url,
